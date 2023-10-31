@@ -18,15 +18,21 @@ def hs6dataset(hs2codes):
         headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.79 Safari/537.36'}
 
         response = requests.get(url, headers=headers)
+        # converts HTML to python-readable
         soup = BeautifulSoup(response.content, "html.parser")
+        # finds <td> HTML elements (these store the HS codes and their descriptions)
         products = soup.find_all('td')
+        # loop through HS4 codes to find HS6 codes
         for product in products:
             if product.find('a'):
                 hs4 = product.text
+                # URL where table of HS6 codes is located
                 urlhs6 = 'https://www.foreign-trade.com/reference/hscode.htm?code=' + hs4
                 responsehs6 = requests.get(urlhs6, headers=headers)
+                # converts HTML to python-readable
                 souphs6 = BeautifulSoup(responsehs6.content, "html.parser")
 
+                # finds <tr> HTML elements where the HS6 codes are stored
                 productshs6 = souphs6.find_all('tr')
                 for producths6 in productshs6:
                     hs6 = producths6.find('b').text
